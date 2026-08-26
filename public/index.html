@@ -1,1 +1,511 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RASSLENE — Contemporary Artist</title><link rel="preconnect" href="https://fonts.googleapis.com"><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="/styles.css"></head><body><header><a class="brand" href="#home">RASSLENE</a><nav><a href="#home">HOME</a><a href="#works">WORKS</a><a href="#about">ABOUT</a><a href="#contact">CONTACT</a></nav><button class="menu" aria-label="Open menu">☰</button></header><main><section id="home" class="hero"><div><p class="eyebrow">PAINTER · VISUAL ARTIST · CRAFT ARTIST</p><h1>Art that keeps<br><em>a trace of you.</em></h1><p class="lead">Creating art through drawings, paintings and handmade creations.</p><a class="btn" href="#works">EXPLORE MY WORKS</a></div><div class="hero-art"><img id="heroImg" alt="Featured artwork"></div></section><section class="section" id="featured"><div class="section-head"><div><p class="eyebrow">SELECTED</p><h2>Featured Works</h2></div><a href="#works">VIEW ALL WORKS →</a></div><div class="grid" id="featuredGrid"></div></section><section class="section" id="works"><p class="eyebrow">THE GALLERY</p><h2>My Works</h2><p class="muted">Selected drawings, paintings and handmade creations.</p><div class="filters"><button class="active" data-cat="ALL">ALL</button><button data-cat="DRAWINGS">DRAWINGS</button><button data-cat="PAINTINGS">PAINTINGS</button><button data-cat="CRAFTS">CRAFTS</button></div><div class="grid" id="worksGrid"></div></section><section class="section about" id="about"><div class="about-img"></div><div><p class="eyebrow">THE ARTIST</p><h2>About Rasslene</h2><p>I’m an independent contemporary artist exploring drawing, painting and craft through a personal, hands-on approach.</p><p>My work moves between precise sketches, expressive painted surfaces and handmade objects. I’m interested in texture, character and the small details that make an artwork feel personal.</p></div></section><section class="section contact" id="contact"><p class="eyebrow">GET IN TOUCH</p><h2>Let’s create something.</h2><div class="contact-layout"><div><p class="muted">For commissions, collaborations or simply to say hello.</p><p>Email · <a href="mailto:hello@rasslene.art">hello@rasslene.art</a></p><p>Instagram · <a href="#">@rasslene</a></p></div><form onsubmit="sendContact(event)"><label>Name<input required></label><label>Email<input type="email" required></label><label>Message<textarea required></textarea></label><button class="btn">SEND MESSAGE</button></form></div></section></main><footer>© 2026 RASSLENE · Independent Artist</footer><div class="modal" id="modal"><div class="modal-card"><button class="close" onclick="closeModal()">×</button><div id="modalContent"></div></div></div><script src="/app.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>RASSLENE — Contemporary Artist</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <!-- Website CSS -->
+    <link rel="stylesheet" href="/styles.css">
+</head>
+
+
+<body>
+
+    <!-- ================= HEADER ================= -->
+
+    <header>
+
+        <a class="brand" href="#home">
+            RASSLENE
+        </a>
+
+        <nav>
+            <a href="#home">HOME</a>
+            <a href="#works">WORKS</a>
+            <a href="#about">ABOUT</a>
+            <a href="#contact">CONTACT</a>
+        </nav>
+
+        <!-- Social icons -->
+
+        <div class="header-socials">
+
+            <a
+                href="https://www.instagram.com/rasslene"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Instagram">
+
+                <i class="fa-brands fa-instagram"></i>
+
+            </a>
+
+            <a
+                href="mailto:hello@rasslene.art"
+                aria-label="Email">
+
+                <i class="fa-solid fa-envelope"></i>
+
+            </a>
+
+        </div>
+
+        <!-- Mobile menu -->
+
+        <button
+            class="menu"
+            aria-label="Open menu">
+
+            ☰
+
+        </button>
+
+    </header>
+
+
+    <!-- ================= MAIN ================= -->
+
+    <main>
+
+
+        <!-- ================= HERO ================= -->
+
+        <section
+            id="home"
+            class="hero">
+
+            <div class="hero-content">
+
+                <p class="eyebrow">
+                    PAINTER · VISUAL ARTIST · CRAFT ARTIST
+                </p>
+
+                <h1>
+                    Art that keeps
+                    <br>
+                    <em>a trace of you.</em>
+                </h1>
+
+                <p class="lead">
+                    Creating art through drawings,
+                    paintings and handmade creations.
+                </p>
+
+                <a
+                    class="btn"
+                    href="#works">
+
+                    EXPLORE MY WORKS
+
+                </a>
+
+            </div>
+
+
+            <!-- Hero artwork -->
+
+            <div class="hero-art">
+
+                <img
+                    id="heroImg"
+                    alt="Featured artwork">
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= FEATURED WORKS ================= -->
+
+        <section
+            class="section"
+            id="featured">
+
+            <div class="section-head">
+
+                <div>
+
+                    <p class="eyebrow">
+                        SELECTED
+                    </p>
+
+                    <h2>
+                        Featured Works
+                    </h2>
+
+                </div>
+
+                <a href="#works">
+                    VIEW ALL WORKS →
+                </a>
+
+            </div>
+
+
+            <!-- Generated dynamically by app.js -->
+
+            <div
+                class="grid"
+                id="featuredGrid">
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= ALL WORKS ================= -->
+
+        <section
+            class="section"
+            id="works">
+
+            <p class="eyebrow">
+                THE GALLERY
+            </p>
+
+            <h2>
+                My Works
+            </h2>
+
+            <p class="muted">
+                Selected drawings, paintings and handmade creations.
+            </p>
+
+
+            <!-- Filters -->
+
+            <div class="filters">
+
+                <button
+                    class="active"
+                    data-cat="ALL">
+
+                    ALL
+
+                </button>
+
+                <button
+                    data-cat="DRAWINGS">
+
+                    DRAWINGS
+
+                </button>
+
+                <button
+                    data-cat="PAINTINGS">
+
+                    PAINTINGS
+
+                </button>
+
+                <button
+                    data-cat="CRAFTS">
+
+                    CRAFTS
+
+                </button>
+
+            </div>
+
+
+            <!-- Generated dynamically by app.js -->
+
+            <div
+                class="grid"
+                id="worksGrid">
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= ABOUT ================= -->
+
+        <section
+            class="section about"
+            id="about">
+
+            <div class="about-img">
+            </div>
+
+
+            <div class="about-content">
+
+                <p class="eyebrow">
+                    THE ARTIST
+                </p>
+
+                <h2>
+                    About Rasslene
+                </h2>
+
+                <p>
+                    I’m an independent contemporary artist
+                    exploring drawing, painting and craft
+                    through a personal, hands-on approach.
+                </p>
+
+                <p>
+                    My work moves between precise sketches,
+                    expressive painted surfaces and handmade
+                    objects. I’m interested in texture,
+                    character and the small details that make
+                    an artwork feel personal.
+                </p>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- ================= CONTACT ================= -->
+
+        <section
+            class="section contact"
+            id="contact">
+
+            <p class="eyebrow">
+                GET IN TOUCH
+            </p>
+
+            <h2>
+                Let’s create something.
+            </h2>
+
+
+            <div class="contact-layout">
+
+
+                <!-- Contact information -->
+
+                <div class="contact-info">
+
+                    <p class="muted">
+                        For commissions, collaborations
+                        or simply to say hello.
+                    </p>
+
+
+                    <!-- EMAIL -->
+
+                    <a
+                        class="contact-social"
+                        href="mailto:hello@rasslene.art">
+
+                        <span class="contact-icon">
+
+                            <i class="fa-solid fa-envelope"></i>
+
+                        </span>
+
+                        <span>
+
+                            <small>EMAIL</small>
+
+                            <strong>
+                                hello@rasslene.art
+                            </strong>
+
+                        </span>
+
+                    </a>
+
+
+                    <!-- INSTAGRAM -->
+
+                    <a
+                        class="contact-social"
+                        href="https://www.instagram.com/rasslene"
+                        target="_blank"
+                        rel="noopener noreferrer">
+
+                        <span class="contact-icon">
+
+                            <i class="fa-brands fa-instagram"></i>
+
+                        </span>
+
+                        <span>
+
+                            <small>INSTAGRAM</small>
+
+                            <strong>
+                                @rasslene
+                            </strong>
+
+                        </span>
+
+                    </a>
+
+                </div>
+
+
+
+                <!-- Contact form -->
+
+                <form
+                    onsubmit="sendContact(event)">
+
+                    <label>
+
+                        Name
+
+                        <input
+                            type="text"
+                            name="name"
+                            required>
+
+                    </label>
+
+
+                    <label>
+
+                        Email
+
+                        <input
+                            type="email"
+                            name="email"
+                            required>
+
+                    </label>
+
+
+                    <label>
+
+                        Message
+
+                        <textarea
+                            name="message"
+                            required>
+                        </textarea>
+
+                    </label>
+
+
+                    <button
+                        type="submit"
+                        class="btn">
+
+                        SEND MESSAGE
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer>
+
+        <div class="footer-content">
+
+            <div>
+
+                <strong>
+                    RASSLENE
+                </strong>
+
+                <p>
+                    Independent contemporary artist.
+                </p>
+
+            </div>
+
+
+            <!-- Social icons -->
+
+            <div class="footer-socials">
+
+                <a
+                    href="https://www.instagram.com/rasslene"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram">
+
+                    <i class="fa-brands fa-instagram"></i>
+
+                </a>
+
+
+                <a
+                    href="mailto:hello@rasslene.art"
+                    aria-label="Email">
+
+                    <i class="fa-solid fa-envelope"></i>
+
+                </a>
+
+            </div>
+
+        </div>
+
+
+        <div class="footer-bottom">
+
+            © 2026 RASSLENE · Independent Artist
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- ================= ARTWORK MODAL ================= -->
+
+    <div
+        class="modal"
+        id="modal">
+
+        <div class="modal-card">
+
+            <button
+                class="close"
+                onclick="closeModal()"
+                aria-label="Close">
+
+                ×
+
+            </button>
+
+
+            <div id="modalContent">
+            </div>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ================= JAVASCRIPT ================= -->
+
+    <script src="/app.js"></script>
+
+</body>
+
+</html>
