@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Rasslene — Admin</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: #0b0b0b;
+            color: #f5f2ec;
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            padding: 25px 6%;
+            border-bottom: 1px solid #292929;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        header h1 {
+            margin: 0;
+            letter-spacing: 4px;
+        }
+
+        button {
+            border: 0;
+            padding: 12px 20px;
+            cursor: pointer;
+            background: #c8a77a;
+            color: #111;
+            font-weight: bold;
+        }
+
+        .logout {
+            background: transparent;
+            color: white;
+            border: 1px solid #555;
+        }
+
+        main {
+            width: min(1100px, 92%);
+            margin: 40px auto;
+        }
+
+        .panel {
+            background: #151515;
+            border: 1px solid #292929;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 7px;
+            color: #aaa;
+        }
+
+        input,
+        textarea,
+        select {
+            width: 100%;
+            padding: 13px;
+            background: #0d0d0d;
+            border: 1px solid #333;
+            color: white;
+        }
+
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .login {
+            max-width: 450px;
+            margin: 100px auto;
+        }
+
+        .login button {
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .work,
+        .review {
+            border-top: 1px solid #333;
+            padding: 20px 0;
+        }
+
+        .work {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .work img {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+        }
+
+        .work-info {
+            flex: 1;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .delete {
+            background: #7d3030;
+            color: white;
+        }
+
+        .approve {
+            background: #668f5b;
+            color: white;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .stars {
+            color: #c8a77a;
+            letter-spacing: 2px;
+        }
+
+        @media(max-width:700px) {
+
+            .work {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            header {
+                gap: 15px;
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- LOGIN -->
+
+    <section id="loginSection" class="login panel">
+
+        <h2>RASSLENE ADMIN</h2>
+
+        <p>Login to manage your gallery.</p>
+
+        <label>Username</label>
+
+        <input
+            id="username"
+            type="text"
+            autocomplete="username"
+        >
+
+        <label>Password</label>
+
+        <input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+        >
+
+        <button onclick="login()">
+            LOGIN
+        </button>
+
+        <p id="loginError"></p>
+
+    </section>
+
+
+    <!-- ADMIN -->
+
+    <div id="adminSection" class="hidden">
+
+        <header>
+
+            <h1>RASSLENE</h1>
+
+            <button
+                class="logout"
+                onclick="logout()"
+            >
+                LOGOUT
+            </button>
+
+        </header>
+
+        <main>
+
+            <!-- ADD WORK -->
+
+            <section class="panel">
+
+                <h2>ADD NEW WORK</h2>
+
+                <form
+                    id="workForm"
+                    enctype="multipart/form-data"
+                >
+
+                    <label>Image</label>
+
+                    <input
+                        id="image"
+                        type="file"
+                        accept="image/*"
+                        required
+                    >
+
+                    <label>Title</label>
+
+                    <input
+                        id="title"
+                        type="text"
+                        required
+                    >
+
+                    <label>Category</label>
+
+                    <select id="category">
+
+                        <option value="DRAWINGS">
+                            DRAWING
+                        </option>
+
+                        <option value="PAINTINGS">
+                            PAINTING
+                        </option>
+
+                        <option value="CRAFTS">
+                            CRAFT
+                        </option>
+
+                    </select>
+
+                    <label>Year</label>
+
+                    <input
+                        id="year"
+                        type="number"
+                        value="2026"
+                    >
+
+                    <label>Description</label>
+
+                    <textarea id="description"></textarea>
+
+                    <label>Materials</label>
+
+                    <input
+                        id="materials"
+                        type="text"
+                        placeholder="Acrylic, canvas..."
+                    >
+
+                    <label>
+
+                        <input
+                            id="featured"
+                            type="checkbox"
+                        >
+
+                        Featured work
+
+                    </label>
+
+                    <br>
+
+                    <button type="submit">
+                        ADD WORK
+                    </button>
+
+                </form>
+
+            </section>
+
+
+            <!-- WORKS -->
+
+            <section class="panel">
+
+                <h2>MY WORKS</h2>
+
+                <div id="worksList"></div>
+
+            </section>
+
+
+            <!-- REVIEWS -->
+
+            <section class="panel">
+
+                <h2>REVIEWS</h2>
+
+                <div id="reviewsList"></div>
+
+            </section>
+
+        </main>
+
+    </div>
+
+
+<script>
+
+async function login() {
+
+    const username =
+        document.getElementById('username').value;
+
+    const password =
+        document.getElementById('password').value;
+
+    const response = await fetch(
+        '/api/admin/login',
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                username,
+                password
+            })
+        }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+
+        document.getElementById('loginError').textContent =
+            data.error || 'Login failed';
+
+        return;
+
+    }
+
+    showAdmin();
+
+}
+
+
+async function checkLogin() {
+
+    const response =
+        await fetch('/api/admin/me');
+
+    const data =
+        await response.json();
+
+    if (data.authenticated) {
+
+        showAdmin();
+
+    }
+
+}
+
+
+function showAdmin() {
+
+    document
+        .getElementById('loginSection')
+        .classList.add('hidden');
+
+    document
+        .getElementById('adminSection')
+        .classList.remove('hidden');
+
+    loadWorks();
+
+    loadReviews();
+
+}
+
+
+async function logout() {
+
+    await fetch(
+        '/api/admin/logout',
+        {
+            method: 'POST'
+        }
+    );
+
+    location.reload();
+
+}
+
+
+// ========================
+// ADD WORK
+// ========================
+
+document
+    .getElementById('workForm')
+    .addEventListener('submit', async event => {
+
+        event.preventDefault();
+
+        const formData =
+            new FormData();
+
+        formData.append(
+            'image',
+            document.getElementById('image').files[0]
+        );
+
+        formData.append(
+            'title',
+            document.getElementById('title').value
+        );
+
+        formData.append(
+            'category',
+            document.getElementById('category').value
+        );
+
+        formData.append(
+            'year',
+            document.getElementById('year').value
+        );
+
+        formData.append(
+            'description',
+            document.getElementById('description').value
+        );
+
+        formData.append(
+            'materials',
+            document.getElementById('materials').value
+        );
+
+        formData.append(
+            'featured',
+            document.getElementById('featured').checked
+        );
+
+        const response =
+            await fetch(
+                '/api/works',
+                {
+                    method: 'POST',
+                    body: formData
+                }
+            );
+
+        if (!response.ok) {
+
+            alert('Error while adding the work.');
+
+            return;
+
+        }
+
+        alert('Artwork added successfully!');
+
+        document
+            .getElementById('workForm')
+            .reset();
+
+        loadWorks();
+
+    });
+
+
+// ========================
+// LOAD WORKS
+// ========================
+
+async function loadWorks() {
+
+    const response =
+        await fetch('/api/works');
+
+    const works =
+        await response.json();
+
+    const container =
+        document.getElementById('worksList');
+
+    container.innerHTML = '';
+
+    works.forEach(work => {
+
+        const div =
+            document.createElement('div');
+
+        div.className = 'work';
+
+        div.innerHTML = `
+
+            <img src="${work.image || ''}">
+
+            <div class="work-info">
+
+                <h3>${escapeHtml(work.title)}</h3>
+
+                <p>
+                    ${work.category}
+                    ·
+                    ${work.year || ''}
+                </p>
+
+                <p>
+                    ${work.featured
+                        ? '⭐ Featured'
+                        : ''}
+                </p>
+
+            </div>
+
+            <div class="actions">
+
+                <button
+                    class="delete"
+                    onclick="deleteWork(${work.id})"
+                >
+                    DELETE
+                </button>
+
+            </div>
+
+        `;
+
+        container.appendChild(div);
+
+    });
+
+}
+
+
+// ========================
+// DELETE WORK
+// ========================
+
+async function deleteWork(id) {
+
+    if (!confirm(
+        'Delete this artwork?'
+    )) return;
+
+    await fetch(
+        '/api/works/' + id,
+        {
+            method: 'DELETE'
+        }
+    );
+
+    loadWorks();
+
+}
+
+
+// ========================
+// REVIEWS
+// ========================
+
+async function loadReviews() {
+
+    const response =
+        await fetch('/api/admin/reviews');
+
+    const reviews =
+        await response.json();
+
+    const container =
+        document.getElementById('reviewsList');
+
+    container.innerHTML = '';
+
+    if (!reviews.length) {
+
+        container.innerHTML =
+            '<p>No reviews yet.</p>';
+
+        return;
+
+    }
+
+    reviews.forEach(review => {
+
+        const div =
+            document.createElement('div');
+
+        div.className = 'review';
+
+        div.innerHTML = `
+
+            <h3>
+                ${escapeHtml(review.title)}
+            </h3>
+
+            <strong>
+                ${escapeHtml(review.client_name)}
+            </strong>
+
+            <div class="stars">
+                ${'★'.repeat(review.rating)}
+                ${'☆'.repeat(5 - review.rating)}
+            </div>
+
+            <p>
+                ${escapeHtml(review.comment)}
+            </p>
+
+            <p>
+                Status:
+                <strong>
+                    ${
+                        review.approved
+                            ? 'APPROVED'
+                            : 'PENDING'
+                    }
+                </strong>
+            </p>
+
+            <div class="actions">
+
+                ${
+                    !review.approved
+                    ? `
+                        <button
+                            class="approve"
+                            onclick="reviewAction(
+                                ${review.id},
+                                'approve'
+                            )"
+                        >
+                            APPROVE
+                        </button>
+                    `
+                    : ''
+                }
+
+                <button
+                    class="delete"
+                    onclick="reviewAction(
+                        ${review.id},
+                        'delete'
+                    )"
+                >
+                    DELETE
+                </button>
+
+            </div>
+
+        `;
+
+        container.appendChild(div);
+
+    });
+
+}
+
+
+async function reviewAction(
+    id,
+    action
+) {
+
+    await fetch(
+        '/api/admin/reviews/' + id,
+        {
+            method: 'PATCH',
+
+            headers: {
+                'Content-Type':
+                    'application/json'
+            },
+
+            body: JSON.stringify({
+                action
+            })
+        }
+    );
+
+    loadReviews();
+
+}
+
+
+// ========================
+// SECURITY
+// ========================
+
+function escapeHtml(text) {
+
+    const div =
+        document.createElement('div');
+
+    div.textContent =
+        text || '';
+
+    return div.innerHTML;
+
+}
+
+
+checkLogin();
+
+</script>
+
+</body>
+
+</html>
