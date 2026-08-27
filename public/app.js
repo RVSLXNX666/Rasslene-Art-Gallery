@@ -1,9 +1,376 @@
-const fallback=[{id:1,title:'Portrait of Castro',category:'DRAWINGS',year:2026,image:'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=85',featured:true,rating:{rating:4.9,count:12}},{id:2,title:'Quiet Surface',category:'PAINTINGS',year:2026,image:'https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=1200&q=85',featured:true,rating:{rating:4.8,count:8}},{id:3,title:'Handmade Form',category:'CRAFTS',year:2026,image:'https://images.unsplash.com/photo-1577083288073-40892c0860a4?auto=format&fit=crop&w=1200&q=85',featured:true,rating:{rating:5,count:5}}];
-const $=s=>document.querySelector(s); let works=[];
-async function load(cat='ALL'){try{const r=await fetch('/api/works?category='+cat); works=await r.json()}catch{works=fallback.filter(x=>cat==='ALL'||x.category===cat)} render();}
-function stars(v=0){return '★'.repeat(Math.round(v))+'☆'.repeat(5-Math.round(v))}
-function card(w){return `<article class="card" onclick="openWork(${w.id})"><div class="card-img"><img src="${w.image||fallback[0].image}" alt="${w.title}"></div><div class="card-info"><div class="card-title">${w.title}</div><div class="meta"><span>${w.category} · ${w.year||''}</span><span class="stars">${stars(w.rating?.rating||0)} ${w.rating?.rating||'—'}</span></div></div></article>`}
-function render(){const featured=works.filter(w=>w.featured).slice(0,6); $('#featuredGrid').innerHTML=(featured.length?featured:works.slice(0,3)).map(card).join('')||'<p class="muted">No featured works yet.</p>'; $('#worksGrid').innerHTML=works.map(card).join('')||'<p class="muted">No works in this category yet.</p>'; const hero=(featured[0]||works[0]); if(hero) $('#heroImg').src=hero.image}
-async function openWork(id){let w=works.find(x=>x.id===id); try{w=await (await fetch('/api/works/'+id)).json()}catch{} if(!w)return; const reviews=w.reviews||[]; $('#modalContent').innerHTML=`<div class="detail"><img src="${w.image||fallback[0].image}" alt="${w.title}"><div><p class="eyebrow">${w.category} · ${w.year||''}</p><h2>${w.title}</h2><p>${w.description||'A contemporary artwork by Rasslene.'}</p>${w.materials?`<p><b>Materials</b><br>${w.materials}</p>`:''}<p class="stars" style="font-size:22px">${stars(w.stats?.rating||w.rating?.rating||0)}</p><p><b>${w.stats?.rating||w.rating?.rating||'—'} / 5</b> · Based on ${w.stats?.count||w.rating?.count||0} reviews</p><div>${reviews.map(r=>`<div class="review"><div class="stars">${stars(r.rating)}</div><p>“${r.comment}”</p><small>— ${r.client_name}</small></div>`).join('')||'<p class="muted">No reviews yet. Be the first to share your thoughts.</p>'}</div><form class="review-form" onsubmit="submitReview(event,${w.id})"><p class="eyebrow">LEAVE A REVIEW</p><div class="star-input" id="starInput">${[1,2,3,4,5].map(n=>`<button type="button" onclick="pickStar(${n})">☆</button>`).join('')}</div><input name="client_name" placeholder="Your name" required><textarea name="comment" placeholder="Your review" required></textarea><input type="hidden" name="rating" id="rating" value="5"><button class="btn">SUBMIT REVIEW</button></form></div></div>`; $('#modal').classList.add('show')}
-function pickStar(n){$('#rating').value=n; document.querySelectorAll('#starInput button').forEach((b,i)=>b.classList.toggle('selected',i<n))} async function submitReview(e,id){e.preventDefault();const f=new FormData(e.target); try{await fetch('/api/reviews',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({work_id:id,client_name:f.get('client_name'),rating:f.get('rating'),comment:f.get('comment')})}); alert('Thanks! Your review was submitted for moderation.'); e.target.reset();}catch{alert('Could not submit review right now.')}} function closeModal(){$('#modal').classList.remove('show')} function sendContact(e){e.preventDefault();alert('Thanks for your message! Connect this form to your email service before launch.');e.target.reset()}
-document.querySelectorAll('.filters button').forEach(b=>b.onclick=()=>{document.querySelectorAll('.filters button').forEach(x=>x.classList.remove('active'));b.classList.add('active');load(b.dataset.cat)}); load();
+const fallback = [
+    {
+        id: 1,
+        title: 'Portrait of Castro',
+        category: 'DRAWINGS',
+        year: 2026,
+        image: 'https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?auto=format&fit=crop&w=1200&q=85',
+        featured: true,
+        rating: { rating: 4.9, count: 12 }
+    },
+    {
+        id: 2,
+        title: 'Quiet Surface',
+        category: 'PAINTINGS',
+        year: 2026,
+        image: 'https://images.unsplash.com/photo-1549490349-8643362247b5?auto=format&fit=crop&w=1200&q=85',
+        featured: true,
+        rating: { rating: 4.8, count: 8 }
+    },
+    {
+        id: 3,
+        title: 'Handmade Form',
+        category: 'CRAFTS',
+        year: 2026,
+        image: 'https://images.unsplash.com/photo-1577083288073-40892c0860a4?auto=format&fit=crop&w=1200&q=85',
+        featured: true,
+        rating: { rating: 5, count: 5 }
+    }
+];
+
+const $ = s => document.querySelector(s);
+
+let works = [];
+
+
+async function load(cat = 'ALL') {
+
+    try {
+        const r = await fetch('/api/works?category=' + cat);
+        works = await r.json();
+
+    } catch {
+        works = fallback.filter(
+            x => cat === 'ALL' || x.category === cat
+        );
+    }
+
+    render();
+}
+
+
+function stars(v = 0) {
+
+    return '★'.repeat(Math.round(v)) +
+           '☆'.repeat(5 - Math.round(v));
+}
+
+
+function card(w) {
+
+    return `
+        <article class="card" onclick="openWork(${w.id})">
+
+            <div class="card-img">
+                <img
+                    src="${w.image || fallback[0].image}"
+                    alt="${w.title}"
+                >
+            </div>
+
+            <div class="card-info">
+
+                <div class="card-title">
+                    ${w.title}
+                </div>
+
+                <div class="meta">
+
+                    <span>
+                        ${w.category} · ${w.year || ''}
+                    </span>
+
+                    <span class="stars">
+                        ${stars(w.rating?.rating || 0)}
+                        ${w.rating?.rating || '—'}
+                    </span>
+
+                </div>
+
+            </div>
+
+        </article>
+    `;
+}
+
+
+function render() {
+
+    // Afficher les œuvres directement dans My Works
+    const worksGrid = $('#worksGrid');
+
+    if (worksGrid) {
+
+        worksGrid.innerHTML =
+            works.map(card).join('') ||
+            '<p class="muted">No works in this category yet.</p>';
+
+    }
+
+    // Image principale du Hero
+    const hero = works[0];
+
+    if (hero && $('#heroImg')) {
+        $('#heroImg').src = hero.image;
+    }
+}
+
+
+async function openWork(id) {
+
+    let w = works.find(x => x.id === id);
+
+    try {
+
+        w = await (
+            await fetch('/api/works/' + id)
+        ).json();
+
+    } catch {}
+
+    if (!w) return;
+
+    const reviews = w.reviews || [];
+
+    $('#modalContent').innerHTML = `
+
+        <div class="detail">
+
+            <img
+                src="${w.image || fallback[0].image}"
+                alt="${w.title}"
+            >
+
+            <div>
+
+                <p class="eyebrow">
+                    ${w.category} · ${w.year || ''}
+                </p>
+
+                <h2>
+                    ${w.title}
+                </h2>
+
+                <p>
+                    ${w.description ||
+                    'A contemporary artwork by Rasslene.'}
+                </p>
+
+                ${
+                    w.materials
+                    ? `
+                        <p>
+                            <b>Materials</b><br>
+                            ${w.materials}
+                        </p>
+                    `
+                    : ''
+                }
+
+                <p
+                    class="stars"
+                    style="font-size:22px"
+                >
+                    ${stars(
+                        w.stats?.rating ||
+                        w.rating?.rating ||
+                        0
+                    )}
+                </p>
+
+                <p>
+                    <b>
+                        ${
+                            w.stats?.rating ||
+                            w.rating?.rating ||
+                            '—'
+                        } / 5
+                    </b>
+                    · Based on ${
+                        w.stats?.count ||
+                        w.rating?.count ||
+                        0
+                    } reviews
+                </p>
+
+                ${
+                    reviews.map(r => `
+                        <div class="review">
+
+                            <div class="stars">
+                                ${stars(r.rating)}
+                            </div>
+
+                            <p>
+                                “${r.comment}”
+                            </p>
+
+                            <small>
+                                — ${r.client_name}
+                            </small>
+
+                        </div>
+                    `).join('')
+                    ||
+                    '<p class="muted">No reviews yet. Be the first to share your thoughts.</p>'
+                }
+
+                <form
+                    class="review-form"
+                    onsubmit="submitReview(event, ${w.id})"
+                >
+
+                    <p class="eyebrow">
+                        LEAVE A REVIEW
+                    </p>
+
+                    <div
+                        class="star-input"
+                        id="starInput"
+                    >
+                        ${
+                            [1,2,3,4,5].map(n => `
+                                <button
+                                    type="button"
+                                    onclick="pickStar(${n})"
+                                >
+                                    ☆
+                                </button>
+                            `).join('')
+                        }
+                    </div>
+
+                    <input
+                        name="client_name"
+                        placeholder="Your name"
+                        required
+                    >
+
+                    <textarea
+                        name="comment"
+                        placeholder="Your review"
+                        required
+                    ></textarea>
+
+                    <input
+                        type="hidden"
+                        name="rating"
+                        id="rating"
+                        value="5"
+                    >
+
+                    <button class="btn">
+                        SUBMIT REVIEW
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+    `;
+
+    $('#modal').classList.add('show');
+}
+
+
+function pickStar(n) {
+
+    $('#rating').value = n;
+
+    document
+        .querySelectorAll('#starInput button')
+        .forEach((b, i) => {
+
+            b.classList.toggle(
+                'selected',
+                i < n
+            );
+
+        });
+}
+
+
+async function submitReview(e, id) {
+
+    e.preventDefault();
+
+    const f = new FormData(e.target);
+
+    try {
+
+        await fetch('/api/reviews', {
+
+            method: 'POST',
+
+            headers: {
+                'Content-Type': 'application/json'
+            },
+
+            body: JSON.stringify({
+                work_id: id,
+                client_name: f.get('client_name'),
+                rating: f.get('rating'),
+                comment: f.get('comment')
+            })
+
+        });
+
+        alert(
+            'Thanks! Your review was submitted for moderation.'
+        );
+
+        e.target.reset();
+
+    } catch {
+
+        alert(
+            'Could not submit review right now.'
+        );
+
+    }
+}
+
+
+function closeModal() {
+
+    $('#modal').classList.remove('show');
+
+}
+
+
+function sendContact(e) {
+
+    e.preventDefault();
+
+    alert(
+        'Thanks for your message! Connect this form to your email service before launch.'
+    );
+
+    e.target.reset();
+}
+
+
+// Filtres
+document
+    .querySelectorAll('.filters button')
+    .forEach(b => {
+
+        b.onclick = () => {
+
+            document
+                .querySelectorAll('.filters button')
+                .forEach(x =>
+                    x.classList.remove('active')
+                );
+
+            b.classList.add('active');
+
+            load(b.dataset.cat);
+        };
+
+    });
+
+
+// Charger les œuvres
+load();
